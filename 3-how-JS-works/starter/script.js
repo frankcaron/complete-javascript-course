@@ -3,12 +3,11 @@
 
 
 
+var abc = function calculateAge(year) {
+    console.log(2016 - year);
+}
 
-
-
-
-
-
+abc(2000);
 
 
 
