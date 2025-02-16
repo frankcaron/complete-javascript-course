@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Simple Ball Physics</title>
+<style>
+body { margin: 0; overflow: hidden; background-color: #f0f0f0; }
+canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="myCanvas"></canvas>
+
+<script>
+    // Get the canvas and context
+    const canvas = document.getElementById('myCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Set canvas dimensions
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Ball properties
+    const ball = {
+        x: 50,          // Initial x position
+        y: 50,          // Initial y position
+        radius: 20,     // Ball's radius
+        color: 'blue',  // Ball's color
+        velocityY: 0,   // Initial vertical velocity
+        gravity: 0.5,  // Gravity (acceleration downwards)
+        bounceFactor: -0.7, // How much energy is lost on bounce (-1 is perfectly elastic, 0 is no bounce)
+    };
+
+    // Function to draw the ball
+    function drawBall() {
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+        ctx.fillStyle = ball.color;
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    // Function to update the ball's position
+    function update() {
+        // Apply gravity to the velocity
+        ball.velocityY += ball.gravity;
+
+        // Update the ball's position based on its velocity
+        ball.y += ball.velocityY;
+
+        // Bounce off the bottom of the canvas
+        if (ball.y + ball.radius > canvas.height) {
+            ball.y = canvas.height - ball.radius;  // Correct position to avoid getting stuck
+            ball.velocityY *= ball.bounceFactor;    // Reverse velocity and reduce it (bounce)
+
+            // Minimal y velocity threshold. Without it, the ball will bounce infinitely in small quantities.
+            if(Math.abs(ball.velocityY) < 1.5){
+                ball.velocityY = 0;
+            }
+        }
+
+        // Bounce off the top (less likely, but good to have)
+        if (ball.y - ball.radius < 0) {
+             ball.y = ball.radius;
+             ball.velocityY *= ball.bounceFactor;
+         }
+
+
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Redraw the ball
+        drawBall();
+
+        // Request the next animation frame
+        requestAnimationFrame(update);
+    }
+
+    // Start the animation
+    update();
+</script>
+</body>
+</html>
